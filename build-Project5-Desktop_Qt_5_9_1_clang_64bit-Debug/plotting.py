@@ -30,7 +30,7 @@ weights = np.ones_like(m)/float(len(m))
 
 n = np.max(m)
 #counts,edges=np.histogram(m,normed=True)
-counts,edges=np.histogram(m,bins=np.arange(np.amin(m),np.amax(m)+n/20.,n/20.),normed=True)
+counts,edges=np.histogram(m,bins=np.arange(np.amin(m),np.amax(m)+n/10.,n/10.),normed=True)
 centers = (edges[:-1] + edges[1:])/2.0
 
 

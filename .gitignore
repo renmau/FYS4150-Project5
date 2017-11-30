@@ -72,3 +72,5 @@ Thumbs.db
 *.dll
 *.exe
 
+# For this project only:
+build-project5local-Desktop_Qt_5_9_1_MSVC2017_64bit-Debug

@@ -42,11 +42,11 @@ void Transactions_MC(mat transactions, vec& cash, int agents, int m_0, double la
         j = intRNG(gen);
 
         double avg_m = sum(cash)/agents;
-        double max_trans = 0;
 
         if (i!=j){
 
             int c_ij = transactions(i,j);
+            double max_trans = transactions.max();
             double prob = 2*pow(fabs(cash(i) - cash(j))/avg_m, -alpha)*(pow((c_ij+1)/(max_trans+1), gamma));
             double test_nr = doubleRNG(gen);
 
@@ -87,8 +87,8 @@ int main()
 
     int agents = 500;      // Number of trading agents
     double m_0 = 100.0;      // initial money per agent
-    double lambda = 0.5;   // saving
-    double alpha = 2.0;
+    double lambda = 0.;   // saving
+    double alpha = 1.0;
     double gamma = 1.0;
 
     int simulations = 1e3;

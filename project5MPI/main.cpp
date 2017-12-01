@@ -2,7 +2,7 @@
 #include <random>
 #include <fstream>
 #include <algorithm>
-#include "mpi.h"
+#include <mpi.h>
 #include <armadillo>
 
 using namespace std;

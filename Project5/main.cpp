@@ -11,7 +11,8 @@ using namespace arma;
 // Writing money to file to make histogram:
 void WriteFile(vec cash, int agents){
     ofstream myfile;
-    myfile.open("e_gamma_1_alpha_1_lambda_0_1e5trans_1e3sim.txt");
+    //myfile.open("e_gamma_1_alpha_1_lambda_0_2e5trans_1e3sim.txt");
+    myfile.open("testing.txt");
 
     for (int i=0; i<agents;i++){
         myfile <<cash(i)<<endl;
@@ -31,9 +32,6 @@ void Transactions_MC(mat transactions, vec& cash, int agents, int m_0, double la
     mt19937 gen(rd());
     uniform_int_distribution<int> intRNG(0, agents-1);
     uniform_real_distribution<double> doubleRNG(0,1);
-    ofstream myfile;
-    myfile.open("test2.txt");
-
 
     for(int k=0; k<trans_number;k++){
 
@@ -42,7 +40,7 @@ void Transactions_MC(mat transactions, vec& cash, int agents, int m_0, double la
         j = intRNG(gen);
 
         double avg_m = sum(cash)/agents;
-
+        //double max_trans =0.;
         if (i!=j){
 
             int c_ij = transactions(i,j);
@@ -77,7 +75,6 @@ void Transactions_MC(mat transactions, vec& cash, int agents, int m_0, double la
     }
 
     cash = sort(cash);
-    myfile.close();
 }
 
 
@@ -98,13 +95,10 @@ int main()
 
     // MC simulations:
     for(int k=0; k<simulations;k++){
-
         cout <<k<<endl;
-
         mat transactions = zeros<mat>(agents,agents);
         vec cash = zeros<vec>(agents)+m_0;
         Transactions_MC(transactions, cash, agents, m_0, lambda, alpha, gamma);
-
         final_distribution += cash;
     }
 

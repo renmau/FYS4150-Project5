@@ -2,7 +2,7 @@
 #include <random>
 #include <fstream>
 #include <algorithm>
-#include <mpi.h>
+#include "mpi.h"
 #include <armadillo>
 
 using namespace std;
@@ -95,9 +95,9 @@ int main(int argn, char*argv[])
     string outfilename = argv[1];
     int agents = atoi(argv[2]);      // Number of trading agents
     double m_0 = 100.0;              // initial money per agent
-    double lambda = atoi(argv[3]);   // saving
-    double alpha = atoi(argv[4]);
-    double gamma = atoi(argv[5]);
+    double lambda = atof(argv[3]);   // saving
+    double alpha = atof(argv[4]);
+    double gamma = atof(argv[5]);
     int simulations = 1e3;
 
 
@@ -120,7 +120,7 @@ int main(int argn, char*argv[])
     //for(int i=0; i< agents; i++) final_distribution_arr[i] = final_distribution(i);
     for(int i = 0; i < agents; i++){
         final_distribution_arr[i] = final_distribution(i);
-        MPI_Reduce(&final_distribution_arr[i],&total_distribution[i] 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+        MPI_Reduce(&final_distribution_arr[i],&total_distribution[i], 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
      }
     int my_rank=0;
     int numprocs = 1;

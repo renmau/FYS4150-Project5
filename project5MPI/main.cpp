@@ -29,7 +29,7 @@ void WriteFile(string outfilename, double* cash, int agents){
 
 
 void Transactions_MC(mat transactions, vec& cash, int agents, int m_0, double lambda, double alpha, double gamma){
-    int trans_number = 1e5; // at least 1e7
+    int trans_number = 2e7; // at least 1e7
 
     //double prob;
     int i; int j;
@@ -49,7 +49,7 @@ void Transactions_MC(mat transactions, vec& cash, int agents, int m_0, double la
         i = intRNG(gen);
         j = intRNG(gen);
 
-        double avg_m = sum(cash)/agents;
+        double avg_m = 1;//sum(cash)/agents;
         //double max_trans = 0.;
         if (i!=j){
             int c_ij = transactions(i,j);

@@ -5,7 +5,7 @@ import numpy as np
 from scipy.stats import linregress
 from scipy.special import gamma
 
-def plot_formatting(fam='serif',fam_font='Computer Modern Roman',font_size=14,tick_size=14):
+def plot_formatting(fam='serif',fam_font='Computer Modern Roman',font_size=18,tick_size=18):
 	""" you get to define what font and size of xlabels and axis ticks you"""
 	"""like, if you want bold text or not.								  """
 	
@@ -18,14 +18,15 @@ def plot_formatting(fam='serif',fam_font='Computer Modern Roman',font_size=14,ti
 
 
 def savings():
-	m = np.genfromtxt('a_lambda0_alpha0_gamma0_2e5trans_1e3sim.txt')
-	m1 = np.genfromtxt('c_lambda025_alpha0_gamma0_1e6trans_1e3sim.txt')
-	m2 = np.genfromtxt('c_lambda05_alpha0_gamma0_2e6trans_1e3sim.txt')
-	m3 = np.genfromtxt('c_lambda09_alpha0_gamma0_1e7trans_1e3sim.txt')
+	m = np.genfromtxt('a_lambda0_alpha0_gamma0_2e5trans.txt')
+	m1 = np.genfromtxt('c_lambda025_alpha0_gamma0_1e6trans.txt')
+	m2 = np.genfromtxt('c_lambda05_alpha0_gamma0_2e6trans.txt')
+	m3 = np.genfromtxt('c_lambda09_alpha0_gamma0_1e7trans.txt')
 	m_list=np.array([m,m1,m2,m3])
 
 	lmbda = np.array([0,0.25,0.5,0.9])
 	beta=np.array([1./np.mean(mm) for mm in m_list])
+	#beta=np.array([np.mean(mm)/np.mean(mm) for mm in m_list])
 	# ------- reduced money array, m/<m>
 	x = np.array([m_list[i]*beta[i] for i in range(len(beta))])
 	
@@ -41,7 +42,7 @@ def savings():
 
 	#--------------------- a) and b)
 	plot_formatting()
-	plot_a=1
+	plot_a=0
 	if plot_a==1:
 		counts,edges=np.histogram(x[0],np.arange(np.amin(x[0]),np.amax(x[0]+binsize),binsize),weights=weights)
 		centers = (edges[:-1] + edges[1:])/2.
@@ -91,23 +92,27 @@ def savings():
 
 	#-------Power law distribution for tail ends
 	# FIX THIS BIT, FIND PROPER POWER LAWS, PARETO MAYBE?
-	wmP = np.array([5*x[i]**(-1-0.7) for i in range(len(lmbda))])
+	#wmP = np.array([(x[i]**(-5.6)*10**(0.5)) for i in range(len(lmbda))])
 	plot_power=1
 	if plot_power==1:
 		ax = plt.gca()
-		for i in range(2,3):
+		for i in range(3,4):
 			mr = x[i]
 			counts,edges=np.histogram(mr,np.arange(np.amin(mr),np.amax(mr+binsize),binsize),weights=weights)
 			#plt.hist(mr,bins=np.arange(np.amin(mr),np.amax(mr+binsize),binsize), label='MC hist',weights=weights)
 			centers = (edges[:-1] + edges[1:])/2.
 			color=next(ax._get_lines.prop_cycler)['color']
-			plt.plot(centers[10:],counts[10:],'o',markersize=3,color=color, label='$\lambda=$'+str(lmbda[i]))
-			plt.plot(mr[260:],Pn_list[i,260:]*binsize,color=color)
-			plt.plot(mr,wmP[i]*binsize-binsize)
+			plt.plot(centers[0:],counts[0:],'o',markersize=3,color=color, label='$\lambda=$'+str(lmbda[i]))
+			#slope, intercept, r_value, p_value, std_err = linregress(np.log10(centers[25:]), np.log10(counts[25:]))
+			#print slope
+			#plt.plot(mr[260:],Pn_list[i,260:]*binsize,color=color)
+			wmP = 10**(1.1)*mr**(-12)
+			#plt.plot(mr,wmP[i]*binsize-binsize,label='Power law $\lambda=$'+str(lmbda[i]))
+			plt.plot(mr,wmP*binsize,label='Power law fit')
 		plt.yscale('log')
 		plt.xscale('log')
-		plt.ylabel('$P(m)$')
-		plt.xlabel(r'money $m/\langle m\rangle$')
+		plt.ylabel('$\log_{10}P(m)$')
+		plt.xlabel(r'money $\log_{10}m/\langle m\rangle$')
 		plt.legend()
 		plt.tight_layout()
 		plt.show()

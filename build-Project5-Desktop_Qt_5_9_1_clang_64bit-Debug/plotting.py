@@ -41,7 +41,7 @@ def savings():
 
 	#--------------------- a) and b)
 	plot_formatting()
-	plot_a=0
+	plot_a=1
 	if plot_a==1:
 		counts,edges=np.histogram(x[0],np.arange(np.amin(x[0]),np.amax(x[0]+binsize),binsize),weights=weights)
 		centers = (edges[:-1] + edges[1:])/2.
@@ -54,7 +54,7 @@ def savings():
 		plt.tight_layout()
 		plt.show()
 		# ------------- log plot
-		plt.plot(centers,counts, label='$\lambda=$'+str(lmbda[i]))
+		plt.plot(centers,counts, label='numerical result')
 		plt.plot(x[0],wmG[0]*binsize/beta[0],label='Gibbs')
 		plt.yscale('log')
 		plt.ylabel('$P(m)$')
@@ -127,7 +127,7 @@ def neighbors_alpha():
 	c4 = np.genfromtxt('d_lambda0_alpha2_gamma0_2e6trans_1000_.txt')
 
 	# ----------- no of agents
-	N1 = 100
+	N1 = 500
 	N2 = 1000
 	lmbda = np.array([0,0.25,0.5,0.9])
 	alpha = np.array([0.5,1,1.5,2.])
@@ -170,6 +170,7 @@ def neighbors_alpha():
 		color=next(ax._get_lines.prop_cycler)['color']
 		plt.plot(centers,counts,color=color, label=r'$\alpha=$'+str(alpha[i]))
 		#plt.plot(mr,Pn_list[i]*binsize,color=color)
+	plt.annotate('N=$ '+np.str(N1), xy=(0.65, 0.05), xycoords='axes fraction')
 	plt.yscale('log')
 	plt.xscale('log')
 	plt.ylabel('$P(m)$')
@@ -209,7 +210,7 @@ def neighbors_alpha():
 	#plt.tight_layout()
 	#plt.show()
 
-#### This is not fixed in anyway, just copypasted the generaø structure.
+# This is not fixed in anyway, just copypasted the general structure.
 def neighbors_gamma():
 	# the _ at the end of the file name means avg_m=1.
 	m = np.genfromtxt('e_lambda0_alpha0_gamma0_2e5trans_.txt')
@@ -262,6 +263,6 @@ def neighbors_gamma():
 	plt.tight_layout()
 	plt.show()
 
-#savings()
-neighbors_alpha()
+savings()
+#neighbors_alpha()
 #neighbors_gamma()

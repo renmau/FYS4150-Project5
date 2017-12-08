@@ -111,8 +111,8 @@ def savings():
 			plt.plot(mr,wmP*binsize,label='Power law fit')
 		plt.yscale('log')
 		plt.xscale('log')
-		plt.ylabel('$\log_{10}P(m)$')
-		plt.xlabel(r'money $\log_{10}m/\langle m\rangle$')
+		plt.ylabel('$P(m)$')
+		plt.xlabel(r'money $m/\langle m\rangle$')
 		plt.legend()
 		plt.tight_layout()
 		plt.show()
@@ -121,15 +121,15 @@ def neighbors_alpha():
 	#m = np.genfromtxt('a_lambda0_alpha0_gamma0_2e5trans_1e3sim.txt')
 
 	# the _ at the end of the file name means avg_m=1.
-	m1 = np.genfromtxt('d_lambda0_alpha05_gamma0_2e6trans_.txt')
-	m2 = np.genfromtxt('d_lambda0_alpha1_gamma0_2e6trans_.txt')
-	m3 = np.genfromtxt('d_lambda0_alpha15_gamma0_2e6trans_.txt')
-	m4 = np.genfromtxt('d_lambda0_alpha2_gamma0_2e6trans_.txt')
+	m1 = np.genfromtxt('d_lambda05_alpha05_gamma0_2e6sim_.txt')
+	m2 = np.genfromtxt('d_lambda05_alpha1_gamma0_2e6sim_.txt')
+	m3 = np.genfromtxt('d_lambda05_alpha15_gamma0_2e6sim_.txt')
+	m4 = np.genfromtxt('d_lambda05_alpha2_gamma0_2e6sim_.txt')
 
-	c1 = np.genfromtxt('d_lambda0_alpha05_gamma0_2e6trans_1000_.txt')
-	c2 = np.genfromtxt('d_lambda0_alpha1_gamma0_2e6trans_1000_.txt')
-	c3 = np.genfromtxt('d_lambda0_alpha15_gamma0_2e6trans_1000_.txt')
-	c4 = np.genfromtxt('d_lambda0_alpha2_gamma0_2e6trans_1000_.txt')
+	c1 = np.genfromtxt('d_lambda0_alpha05_gamma0_2e6sim_1000ag_.txt')
+	c2 = np.genfromtxt('d_lambda0_alpha1_gamma0_2e6sim_1000ag_.txt')
+	c3 = np.genfromtxt('d_lambda0_alpha15_gamma0_2e6sim_1000ag_.txt')
+	c4 = np.genfromtxt('d_lambda0_alpha2_gamma0_2e6sim_1000ag_.txt')
 
 	# ----------- no of agents
 	N1 = 500
@@ -150,70 +150,98 @@ def neighbors_alpha():
 	weights2 = np.ones_like(x2[0])/float(len(x2[0]))
 
 	# This need fixing
-	a=1.	# find a from calculating slope of simulated result
+	#a=1.0	# find a from calculating slope of simulated result
 
-	wmm1=np.array([a*(m_list[i]*beta[i])**(-1-alpha[i]) for i in range(len(alpha))])
-	wmm2=np.array([a*(c_list[i]*beta[i])**(-1-alpha[i]) for i in range(len(alpha))])
+	#wmm1=np.array([a*(m_list[i]*beta[i])**(-1-alpha[i]) for i in range(len(alpha))])
+	#wmm2=np.array([a*(c_list[i]*beta[i])**(-1-alpha[i]) for i in range(len(alpha))])
 
 
 	#print 'max before norm =',np.amax(wmm)
 	#print np.argmax(wmm)
-	wmm1 /=np.amax(wmm1)
-	wmm2 /=np.amax(wmm2)
+	#wmm1 /=np.amax(wmm1)
+	#wmm2 /=np.amax(wmm2)
 	#print wmm
 	#print 'max after norm =', np.amax(wmm)
 
 
 	#----------------------d)
 	plot_formatting()
-	ax = plt.gca()
-	for i in range(len(m_list)):
-		mr = m_list[i]#x1[i]
-		counts,edges=np.histogram(mr,np.arange(np.amin(mr),np.amax(mr+binsize1),binsize1),weights=weights1)
-		#plt.hist(mr,bins=np.arange(np.amin(mr),np.amax(mr+binsize),binsize), label='MC hist',weights=weights1)
-		centers = (edges[:-1] + edges[1:])/2.
-		color=next(ax._get_lines.prop_cycler)['color']
-		plt.plot(centers,counts,color=color, label=r'$\alpha=$'+str(alpha[i]))
-		#plt.plot(mr,Pn_list[i]*binsize,color=color)
-	plt.annotate('N=$ '+np.str(N1), xy=(0.65, 0.05), xycoords='axes fraction')
-	plt.yscale('log')
-	plt.xscale('log')
-	plt.ylabel('$P(m)$')
-	plt.xlabel(r'money $m/\langle m\rangle$')
-	plt.legend()
-	plt.grid(b=True, which='minor', alpha=0.2)
-	plt.tight_layout()
-	plt.show()
+	ag500 = 0
+	if ag500 ==1:
+		ax = plt.gca()
+		for i in range(len(m_list)):
+			mr = m_list[i]#x1[i]
+			counts,edges=np.histogram(mr,np.arange(np.amin(mr),np.amax(mr+binsize1),binsize1),weights=weights1)
+			#plt.hist(mr,bins=np.arange(np.amin(mr),np.amax(mr+binsize),binsize), label='MC hist',weights=weights1)
+			centers = (edges[:-1] + edges[1:])/2.
+			color=next(ax._get_lines.prop_cycler)['color']
+			plt.plot(centers,counts,color=color, label=r'$\alpha=$'+str(alpha[i]))
+			#plt.plot(mr,Pn_list[i]*binsize,color=color)
+		plt.annotate('$N = $ '+np.str(N1), xy=(0.75, 0.45), xycoords='axes fraction')
+		plt.annotate('$\lambda = 0.5$ ', xy=(0.75, 0.35), xycoords='axes fraction')
+		plt.yscale('log')
+		plt.xscale('log')
+		plt.ylabel('$P(m)$')
+		plt.xlabel(r'money $m$')
+		plt.legend()
+		plt.grid(b=True, which='minor', alpha=0.2)
+		plt.tight_layout()
+		plt.show()
 
-	for i in range(len(c_list)):
-		mr = c_list[i]#x2[i]
-		counts,edges=np.histogram(mr,np.arange(np.amin(mr),np.amax(mr+binsize1),binsize1),weights=weights2)
-		#plt.hist(mr,bins=np.arange(np.amin(mr),np.amax(mr+binsize),binsize), label='MC hist',weights=weights2)
-		centers = (edges[:-1] + edges[1:])/2.
-		color=next(ax._get_lines.prop_cycler)['color']
-		plt.plot(centers,counts,color=color, label=r'$\alpha=$'+str(alpha[i]))
-		#plt.plot(mr,Pn_list[i]*binsize,color=color)
-	plt.yscale('log')
-	plt.xscale('log')
-	plt.ylabel('$P(m)$')
-	plt.xlabel(r'money $m/\langle m\rangle$')
-	######## get a text box with N stated
-	plt.grid(b=True, which='minor', alpha=0.2)
-	plt.legend()
-	plt.tight_layout()
-	plt.show()
+		for i in range(len(c_list)):
+			mr = c_list[i]#x2[i]
+			counts,edges=np.histogram(mr,np.arange(np.amin(mr),np.amax(mr+binsize1),binsize1),weights=weights2)
+			#plt.hist(mr,bins=np.arange(np.amin(mr),np.amax(mr+binsize),binsize), label='MC hist',weights=weights2)
+			centers = (edges[:-1] + edges[1:])/2.
+			color=next(ax._get_lines.prop_cycler)['color']
+			plt.plot(centers,counts,color=color, label=r'$\alpha=$'+str(alpha[i]))
+			#plt.plot(mr,Pn_list[i]*binsize,color=color)
+		plt.yscale('log')
+		plt.xscale('log')
+		plt.ylabel('$P(m)$')
+		plt.xlabel(r'money $m$')
+		plt.annotate('$N = $ '+np.str(N2), xy=(0.75, 0.45), xycoords='axes fraction')
+		######## get a text box with N stated
+		plt.grid(b=True, which='minor', alpha=0.2)
+		plt.legend()
+		plt.tight_layout()
+		plt.show()
 
-	#plt.hist(mr,bins=np.arange(np.amin(mr),np.amax(mr+binsize),binsize), label='MC hist',weights=weights)
-	#plt.plot(mr,wm*5,label='Gibbs')
+	pareto_power =1
+	if pareto_power==1:
+		for i in range(0,1):
+			mr = m_list[i]#x1[i]
+			counts,edges=np.histogram(mr,np.arange(np.amin(mr),np.amax(mr+binsize1),binsize1),weights=weights1)
+			centers = (edges[:-1] + edges[1:])/2.
 
-	#plt.plot(centers,counts,label='MC')
-	#plt.loglog(m*beta,wmm)	
-	#plt.loglog(centers,counts)
-	#plt.ylabel('P(m)')
-	#plt.xlabel('money $m$')
-	#plt.legend()
-	#plt.tight_layout()
-	#plt.show()
+			#slope, intercept, r_value, p_value, std_err = linregress(centers[10:], counts[10:])
+			#a=slope	# find a from calculating slope of simulated result
+			#print slope
+
+			#a=[10**(1.7),10**(2.7),10**(3.7),10**(4.7)] 	# for 500 agents
+			#a = [10**(1.5),10**(2.8),10**(3.8),10**(5.8)]  # for 1000 agents
+			#a = [10**(1.2),10**(2.9),10**(3.9),10**(5.8)]  # for 500 agents and savings
+			a = 10**(7.7)
+
+
+			wmm1=a*(mr)**(-1-alpha[i]-2.5)
+			#wmm1 /=np.amax(wmm1)
+
+			plt.plot(mr,wmm1,label='Pareto')
+			plt.plot(centers[0:],counts[0:], 'o', markersize=3, label=r'$\alpha =$'+str(alpha[i]))
+			#plt.plot(centers[0:],counts[0:], label=r'$\alpha =$'+str(alpha[i]))
+
+		plt.yscale('log')
+		plt.xscale('log')
+		plt.annotate('$N = $ '+np.str(N1), xy=(0.75, 0.6), xycoords='axes fraction')
+		plt.annotate('$\lambda = 0.5$ ', xy=(0.75, 0.5), xycoords='axes fraction')
+		plt.ylabel(r'$P(m)$')
+		plt.xlabel(r'money $m$')
+		plt.legend()
+		plt.tight_layout()
+		plt.show()
+		#plt.plot(centers,counts,label='MC')
+		#plt.loglog(m*beta,wmm)
 
 # This is not fixed in anyway, just copypasted the general structure.
 def neighbors_gamma():
@@ -268,6 +296,6 @@ def neighbors_gamma():
 	plt.tight_layout()
 	plt.show()
 
-savings()
-#neighbors_alpha()
+#savings()
+neighbors_alpha()
 #neighbors_gamma()

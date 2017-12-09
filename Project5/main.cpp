@@ -54,38 +54,34 @@ void Transactions_MC(mat transactions, vec& cash, int agents, int m_0, double la
         m_i = cash(i);
         m_j = cash(j);
 
-        double avg_m = 1.;//m_0;   //sum(cash)/(double)agents;
+        double avg_m = 1.; //m_0;   //sum(cash)/(double)agents;
         double max_trans = 0.;
 
-        //if (i!=j){
+
         c_ij = transactions(i,j);
         
         if(gamma>0){
             double max_trans = (transactions).max();
         }
 
-        //double prob = pow(fabs(cash(i) - cash(j))/avg_m, -alpha)*(pow((c_ij+1)/(max_trans+1.), gamma));
+
         double test_nr = doubleRNG(gen);
         
         while ((pow(fabs(m_i - m_j)/avg_m, -alpha)*(pow((c_ij+1)/(max_trans+1.), gamma)) < test_nr) || (i == j)) {
 
-            // Pick new agents ...
             i = intRNG(gen);
             j = intRNG(gen);
 
-            // ... find wealth of these ...
             m_i = cash(i);
             m_j = cash(j);
 
-            // ... update previous transactions ...
             c_ij = transactions(i,j);
 
-            // ... and update the random comparison number
             test_nr = doubleRNG(gen);
 
         }
 
-        //if (test_nr < prob){
+
         double eps = doubleRNG(gen);
         double sum_ij = cash(i) + cash(j);
         
@@ -93,9 +89,6 @@ void Transactions_MC(mat transactions, vec& cash, int agents, int m_0, double la
 
         cash(i) += dm;
         cash(j) -= dm; 
-
-        //cash(i) = lambda*cash(i) + eps*(1.-lambda)*sum_ij;
-        //cash(j) = lambda*cash(j) + (1.-eps)*(1.-lambda)*sum_ij;
 
         transactions(i,j) += 1;
         transactions(j,i) += 1;
@@ -122,7 +115,7 @@ int main(int argn, char*argv[])
     double alpha = atof(argv[4]);
     double gamma = atof(argv[5]);
     int simulations = 1e3;
-    //cout <<"agents="<<agents<<"lambda = "<<lambda<<" alpha= "<<alpha<<" gamma = "<<gamma<<endl;
+
 
     vec final_distribution = zeros<vec>(agents);
 
@@ -143,15 +136,12 @@ int main(int argn, char*argv[])
 
     for(int i=0; i< agents; i++) final_distribution_arr[i] = final_distribution(i);
     for(int i = 0; i < agents; i++){
-        //final_distribution_arr[i] = final_distribution(i);
         MPI_Reduce(&final_distribution_arr[i],&total_distribution[i], 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
      }
-    //int my_rank=0;
-    //int numprocs = 1;
+
     if (my_rank==0){
         for (int i =0; i<agents;i++){
             total_distribution[i] /=((double) (numprocs*simulations));
-            //final_distribution[i] /=((double) (simulations));
         }
         double tot_money = sum_money(total_distribution,agents);
         cout << "SUM: " << tot_money << endl;

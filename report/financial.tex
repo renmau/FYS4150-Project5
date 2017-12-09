@@ -1,0 +1,227 @@
+% REMEMBER TO SET LANGUAGE!
+\documentclass[a4paper,10pt,english]{article}
+\usepackage[utf8]{inputenc}
+%\bibliography{references.bib}
+% Standard stuff
+\usepackage{amsmath,graphicx,babel,varioref,verbatim,amsfonts,float}
+\usepackage[a4paper, total={6.8in, 9in}]{geometry}
+%\usepackage{biblatex}
+\usepackage{csquotes}
+\usepackage[round]{natbib}
+\bibliographystyle{plainnat}
+\usepackage[bottom]{footmisc}
+
+% colors in text
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+% Hyper refs
+\usepackage[colorlinks,linkcolor=black,citecolor=black]{hyperref}
+
+% Document formatting
+\setlength{\parindent}{2em}
+\setlength{\parskip}{1.5mm}
+
+
+\def\code#1{\texttt{#1}} % make single word look like code, comand \code{...}
+
+%Equation formatting
+\usepackage{physics}	% For derivative fraction symbol, partial and total
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}} % number certain equations in align*
+\newcommand{\matr}[1]{\mathbf{#1}}	% Thick line for matriced and vectors in mathmode
+
+
+%Color scheme for listings
+\usepackage{textcomp}
+\definecolor{listinggray}{gray}{0.9}
+\definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
+
+%Listings configuration
+\usepackage{listings}
+\lstset{
+	backgroundcolor=\color{lbcolor},
+	tabsize=4,
+	rulecolor=,
+	language=python,
+        basicstyle=\scriptsize,
+        upquote=true,
+        aboveskip={1.5\baselineskip},
+        columns=fixed,
+	numbers=left,
+        showstringspaces=false,
+        extendedchars=true,
+        breaklines=true,
+        prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+        frame=single,
+        showtabs=false,
+        showspaces=false,
+        showstringspaces=false,
+        identifierstyle=\ttfamily,
+        keywordstyle=\color[rgb]{0,0,1},
+        commentstyle=\color[rgb]{0.133,0.545,0.133},
+        stringstyle=\color[rgb]{0.627,0.126,0.941}
+        }
+        
+\newcounter{subproject}
+\renewcommand{\thesubproject}{\alph{subproject}}
+\newenvironment{subproj}{
+\begin{description}
+\item[\refstepcounter{subproject}(\thesubproject)]
+}{\end{description}}
+
+%Lettering instead of numbering in different layers
+%\renewcommand{\labelenumi}{\alph{enumi}}
+%\renewcommand{\thesubsection}{\alph{subsection}}
+
+%opening
+\title{Monte Carlo Modeling of Transactions}
+\author{Ingrid Marie Kjelseth, Elisabeth Strøm, Renate Mauland}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+
+\tableofcontents
+
+\pagebreak
+
+\begin{abstract}
+
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		SECTION 1: Introduction							%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		SECTION 2: METHOD/IMPLEMENTATION				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Method}
+Here we present the methods used to achieve the results in Section ????.
+We will use Monte Carlo methods to simulate financial transactions among agents. In our model we have a total of $N$ agents, where a money transaction takes place between a pair of agents, $i$ and $j$, at a time. Each agent starts of with the same amount of money, $m_0=100$, and the total amount of money is $m=\sum^N_i m_0$. Money is conserved in the transaction, so 
+\begin{equation}\label{eq:conserved}
+m_i'+m_i = m_j' + m_j,
+\end{equation}
+where $m_i$ and $m_j$ is the amount of money of agent $i$ and $j$, respectively, and the apostrophe denotes the wealth of an agent after a transaction has taken place.
+\subsection{Basic model}
+Assuming now a simple model, where the amount of money that changes hands between two agents is random. The wealth of each agent, $i$ and $j$, after the transaction has taken place is given by
+\begin{equation}
+m_i' =\epsilon (m_i+m_j)\qquad m_j' = (1-\epsilon)(m_i +m_j),
+\end{equation},
+where $\epsilon$ is a random number between zero and one, $\epsilon \in [0,\,1]$, meaning an agent can not be in debt to another. 
+
+Due to the law of conservation defined in Equation \ref{eq:conserved}, one can show that the system eventually reaches an equilibrium state given by a Gibbs distribution,
+\begin{equation}
+w_m = \beta \text{e}^{-\beta m}.
+\end{equation}
+Here, $\beta = 1/\ev{m}$, and $\ev{m}$ is the average money, defined as
+\begin{equation}
+\ev{m} = \sum_i^N \frac{m_i}{N} = m_0,
+\end{equation}
+the initial wealth of each agent. We can compare the Gibbs distribution with the one we get through running several Monte Carlo simulations. We have that $N=500$ and so the total money is $m=50\,000$.
+
+\subsection{Including saving}
+To make our model more realistic, we will add the ability of an agent to save their money. We do this by adding a criterion stating that an agent can save a fraction $\lambda$ of their money. This means that the money that can be used in a transaction between agents $i$ and $j$ is $(1-\lambda)(m_i+m_j)$.
+
+The individual wealth after a transaction can be written as
+\begin{equation}\label{eq:wealth}
+m_i' = m_i + \delta m \qquad m_j' = m_j - \delta m,
+\end{equation}
+where we have introduced the change in money $\delta m$ as
+\begin{equation}\label{eq:deltam}
+\delta m = (1-\lambda)(\epsilon m_j -(1-\epsilon)m_i).
+\end{equation} 
+We will run our computations for this case with $\lambda=0.25,\,0.5$ and 0.9.
+From our calculations we can extract the probability of an agent having a certain amount of money. This probability is no longer given by a Gibbs distribution, but is well fitted by the function
+\begin{equation}
+w_m=P_n(x)=a_nx^{n-1}\text{e}^{-nx}
+\end{equation}
+from \citet{Patriarca}.
+Here we have introduced the variables
+\begin{equation}
+x=\frac{m}{\ev{m}},\qquad \text{and}\quad n(\lambda) = 1 + \frac{3\lambda}{1-\lambda}, \quad a_n=\frac{n^n}{\Gamma(n)},
+\end{equation}
+where $\Gamma(n)$ is the Gamma function
+ The number of agents we have in our simulation is still $N=500$ and $m=50\,000$.
+
+\subsection{Preferences for transactions}
+So far, any agent can interact with any agent with an equal probability. In reality this is seldom the case, people have preferences for who they want to conduct business with. There are different ways of simulating this, but we will run our simulations based on two assumptions: People with the same amount of wealth are more likely to interact with one another; People who have previously done transactions are more probable of doing so again with the same person. Note that we do not include the possibility of past transactions having been a negative experience for our agents, thus impacting the probability of repeat interactions.
+\subsubsection{Wealth}
+First we include the first mentioned assumption; making the probability of two agents interacting a function of their respective wealth. We define this probability as
+\begin{equation}
+p_{ij} = 2 \abs{m_i-m_j}^{-\alpha}.
+\end{equation}
+We see that if the agents possesses a similar wealth, the likelihood of them interacting increases. We will run this simulation for various $\alpha \in [0,\,2]$.
+ A comparison will be made between the tail end of our final distribution of wealth and the Pareto distribution, in an attempt to reproduce Figure 1 from \citet{Goswami}. 
+ The Pareto distribution is given by
+\begin{equation}
+w_m =A m^{-(1+\alpha)},
+\end{equation}
+where the proportionality constant $A$ is decided by calculating the slope of the curve of our simulated wealth distribution. 
+We intend to do this analysis with and without saving, meaning we will put $\lambda=0$ and $\lambda>0$. The simulations will be run for $N=500$, and $N=1000$.
+
+\subsubsection{Former transactions}
+ Next we include how two agents having interacted before increases the probability of them doing so again. We simply multiply the previous likelihood with a new factor:
+\begin{equation}
+p_{ij} = 2 \abs{m_i-m_j}^{-\alpha}\left(\frac{c_{ij} + 1}{\text{max(\textbf{C}) +1}}\right)^\gamma,
+\end{equation} 
+where $c_{ij}$ is the number of previous interactions between agents $i$ and $j$, which is an element of the $\textbf{C}$ matrix, which contain every interaction between all pair of agents. We add the 1 for the case where they have not interacted before, so that it is still possible for them to do so.
+
+We will compare this result with Figure 5 and 6 in \citet{Goswami}, meaning we will do this analysis for $N=1000$, $\lambda=0$, $\alpha=1$ and $\alpha=2$ using $\gamma\in[1,\,4]$. We will also do a case with saving, putting $\lambda=...$.
+
+\subsection{Algorithm}
+To model the financial transactions, we will run a thousand Monte Carlo cycles. For each cycle we first initialize the transaction matrix, \textbf{C}, which keep tabs over how many transactions has occurred between agents $i$ and $j$. We also initialize a cash array, which has a length equal to the number of agents $N$. The money of each agent is added here for each transaction. The matrix is initially filled with zeros, while the cash array is filled with the initial sum $m_0$. The next thing that happens is the transactions them selves. The algorithm for this looks as follows;
+\begin{enumerate}
+\item We pick out two random numbers between 0 and $N-1$. These are the agents that might do a transaction.
+\item We calculate the probability $p_{ij}$ Of the two agents performing a transaction. If $\alpha$ and $\gamma$ is zero, this will always happen.
+\item We pick out a random number between 0 and 1 .If this number is lower than $p_{ij}$, they will perform a transaction. In which case;
+\begin{itemize}
+\item Pick a random number $\epsilon$ from a uniform distribution.
+\item Calculate the new wealth of agent $i$ and $j$ as defined by Equation \ref{eq:wealth} and \ref{eq:deltam}.
+\item Add a number in spot $\textbf{C}_{ij}$ in the transaction matrix to indicate that a successful transaction has occurred between Agent $i$ and Agent $j$.
+
+\end{itemize}
+\item Repeat steps 1 through 4 as many times as has been decided. We repeat the above between $10^5$ to $10^7$ times, depending on the values of the parameters $\lambda$, $\alpha$, and $\gamma$. 
+\end{enumerate}
+Doing this for every spin in our lattice, constitutes one Monte Carlo cycle, of which we will be doing several. We expect that for many MC cycles, such as $10^7$ of them, the numerically computed expectation values divided by the number of MC cycles will converge toward their actual analytical values. 
+
+This is the idea behind a Markov chain: There are two possible outcomes to each experiment, and there is a probability for each outcome, which depend on the previous outcome of the previous experiment. As time goes on, or rather, as the number of MC cycles increases, the system reaches an equilibrium state. In our case, the two outcomes are that a spin is flipped, or that it is not flipped, and the probability for either depend on the energy of the previous flip, or rather the previous ``experiment''.
+
+
+\section{Implementation}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		SECTION 3: Results							%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		SECTION 4: Discussion							%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Discussion}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		SECTION 5: Conclusion							%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+
+
+
+
+
+
+
+
+\bibliography{library}
+
+\end{document}

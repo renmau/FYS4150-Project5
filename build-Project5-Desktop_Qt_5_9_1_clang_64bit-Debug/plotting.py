@@ -130,14 +130,15 @@ def neighbors_alpha():
 	c2 = np.genfromtxt('d_lambda0_alpha1_gamma0_2e6sim_1000ag_.txt')
 	c3 = np.genfromtxt('d_lambda0_alpha15_gamma0_2e6sim_1000ag_.txt')
 	c4 = np.genfromtxt('d_lambda0_alpha2_gamma0_2e6sim_1000ag_.txt')
+	c5 = np.genfromtxt('d_lambda0_alpha20_gamma0_2e6sim_1000ag_.txt') # for alpha>>1
 
 	# ----------- no of agents
 	N1 = 500
 	N2 = 1000
 	lmbda = np.array([0,0.25,0.5,0.9])
-	alpha = np.array([0.5,1,1.5,2.])
+	alpha = np.array([0.5,1,1.5,2.,20.])
 	m_list = np.array([m1,m2,m3,m4]) 	# 500 agents
-	c_list = np.array([c1,c2,c3,c4])	# 1000 agents
+	c_list = np.array([c1,c2,c3,c4,c5])	# 1000 agents
 
 	beta=np.array([1./np.mean(mm) for mm in m_list])
 
@@ -166,7 +167,7 @@ def neighbors_alpha():
 
 	#----------------------d)
 	plot_formatting()
-	ag500 = 0
+	ag500 = 1
 	if ag500 ==1:
 		ax = plt.gca()
 		for i in range(len(m_list)):
@@ -188,7 +189,7 @@ def neighbors_alpha():
 		plt.tight_layout()
 		plt.show()
 
-		for i in range(len(c_list)):
+		for i in range(4,5):
 			mr = c_list[i]#x2[i]
 			counts,edges=np.histogram(mr,np.arange(np.amin(mr),np.amax(mr+binsize1),binsize1),weights=weights2)
 			#plt.hist(mr,bins=np.arange(np.amin(mr),np.amax(mr+binsize),binsize), label='MC hist',weights=weights2)
@@ -207,7 +208,7 @@ def neighbors_alpha():
 		plt.tight_layout()
 		plt.show()
 
-	pareto_power =1
+	pareto_power =0
 	if pareto_power==1:
 		for i in range(0,1):
 			mr = m_list[i]#x1[i]
@@ -246,12 +247,12 @@ def neighbors_alpha():
 # This is not fixed in anyway, just copypasted the general structure.
 def neighbors_gamma():
 	# the _ at the end of the file name means avg_m=1.
-	m = np.genfromtxt('e_lambda0_alpha0_gamma0_2e5trans_.txt')
-	m1 = np.genfromtxt('e_lambda0_alpha05_gamma0_2e6trans_.txt')
-	m2 = np.genfromtxt('e_lambda0_alpha1_gamma0_2e6trans_.txt')
-	m3 = np.genfromtxt('e_lambda0_alpha15_gamma0_2e6trans_.txt')
-	m4 = np.genfromtxt('e_lambda0_alpha2_gamma0_2e6trans_.txt')
-	m4 = np.genfromtxt('e_lambda0_alpha20_gamma0_2e6trans_.txt') # for alpha>>1
+
+	m = np.genfromtxt('e_lambda0_alpha1_gamma0_2e6sim_.txt')
+	m1 = np.genfromtxt('e_lambda0_alpha1_gamma1_2e6sim_.txt')
+	m2 = np.genfromtxt('e_lambda0_alpha1_gamma2_2e6sim_.txt')
+	m3 = np.genfromtxt('e_lambda0_alpha1_gamma3_2e6sim_.txt')
+	m4 = np.genfromtxt('e_lambda0_alpha1_gamma4_2e6sim_.txt')
 
 	lmbda = np.array([0,0.25,0.5,0.9])
 	alpha = np.array([0.5,1,1.5,2.,20])
@@ -263,38 +264,59 @@ def neighbors_gamma():
 	x = np.array([m_list[i]*beta[i] for i in range(len(beta))])
 	binsize=0.1
 	weights = np.ones_like(x[0])/float(len(x[0]))
+	N1=1000
 
-	''' THIS NEED FIXING
-	a=1.	# find a from calculating slope of simulated result
-
-	wmm=np.array([a*(m[i]*beta[i])**(-1-alpha[i]) for i in range(len(alpha))])
-
-
-	#print 'max before norm =',np.amax(wmm)
-	#print np.argmax(wmm)
-	wmm /=np.amax(wmm)
-	#print wmm
-	#print 'max after norm =', np.amax(wmm)
-	'''
-
-	#----------------------d)
 	plot_formatting()
-	ax = plt.gca()
-	for i in range(2,5):
-		mr = x[i]
-		counts,edges=np.histogram(mr,np.arange(np.amin(mr),np.amax(mr+binsize),binsize),weights=weights)
-		#plt.hist(mr,bins=np.arange(np.amin(mr),np.amax(mr+binsize),binsize), label='MC hist',weights=weights)
-		centers = (edges[:-1] + edges[1:])/2.
-		color=next(ax._get_lines.prop_cycler)['color']
-		plt.plot(centers,counts,':',color=color, label='$\lambda=$'+str(alpha[i]))
-		#plt.plot(mr,Pn_list[i]*binsize,color=color)
-	plt.yscale('log')
-	plt.xscale('log')
-	plt.ylabel('$P(m)$')
-	plt.xlabel(r'money $m/\langle m\rangle$')
-	plt.legend()
-	plt.tight_layout()
-	plt.show()
+
+	plot_dist = 0
+	if plot_dist == 1:
+		ax = plt.gca()
+		for i in range(0,1):
+			mr = x[i]
+			counts,edges=np.histogram(mr,np.arange(np.amin(mr),np.amax(mr+binsize),binsize),weights=weights)
+			#plt.hist(mr,bins=np.arange(np.amin(mr),np.amax(mr+binsize),binsize), label='MC hist',weights=weights)
+			centers = (edges[:-1] + edges[1:])/2.
+			color=next(ax._get_lines.prop_cycler)['color']
+			plt.plot(centers,counts,':',color=color, label='$\gamma=$'+str(gamma[i]))
+			#plt.plot(mr,Pn_list[i]*binsize,color=color)
+		plt.annotate('$N = $ '+np.str(N1), xy=(0.75, 0.4), xycoords='axes fraction')
+		plt.annotate('$\lambda = 0.5$ ', xy=(0.75, 0.3), xycoords='axes fraction')
+		plt.annotate(r'$\alpha = 2.0$ ', xy=(0.75, 0.2), xycoords='axes fraction')
+		plt.yscale('log')
+		plt.xscale('log')
+		plt.ylabel('$P(m)$')
+		plt.xlabel(r'money $m/\langle m\rangle$')
+		plt.legend()
+		plt.tight_layout()
+		plt.show()
+
+	plot_pareto = 1
+	if plot_pareto==1:
+		for i in range(2,5):
+			mr = x[i]
+			counts,edges=np.histogram(mr,np.arange(np.amin(mr),np.amax(mr+binsize),binsize),weights=weights)
+			centers = (edges[:-1] + edges[1:])/2.
+
+			a = 10**(-0.8)
+
+			wmm1=a*(mr)**(-1-2.0)
+
+			#plt.plot(mr,wmm1,label='Pareto')
+			#plt.plot(mr,wmm1)
+			plt.plot(centers,counts, 'o', markersize=2, label=r'$\gamma =$'+str(gamma[i]))
+			#plt.plot(centers[0:],counts[0:], label=r'$\alpha =$'+str(alpha[i]))
+		plt.plot(mr,wmm1,label='Pareto')
+		plt.yscale('log')
+		plt.xscale('log')
+		plt.annotate('$N = $ '+np.str(N1), xy=(0.45, 0.9), xycoords='axes fraction')
+		plt.annotate('$\lambda = 0.0$ ', xy=(0.45, 0.8), xycoords='axes fraction')
+		plt.annotate(r'$\alpha = 1.0$ ', xy=(0.45, 0.7), xycoords='axes fraction')
+		plt.ylabel(r'$P(m)$')
+		plt.xlabel(r'money $m/\langle m\rangle$')
+		plt.legend()
+		plt.tight_layout()
+		plt.show()
+
 
 #savings()
 neighbors_alpha()
